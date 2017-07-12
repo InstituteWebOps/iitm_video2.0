@@ -1,0 +1,24 @@
+doctype html
+html
+  head
+    title Login
+    link(rel = 'stylesheet' href='/bower_components/bootstrap/dist/css/bootstrap.css')
+    link(rel = 'stylesheet' href='/css/style.css')
+    
+  body
+    .container
+      h2 LDAP Login
+      hr
+      br
+      //!= messages('message',locals)
+      form(method = 'POST', action = '/login')
+        #form-group
+        label Roll Number: 
+        input.form-control(name = 'username',type = 'text',placeholder = 'Enter Roll number')
+        br
+        #form-group
+        label Password: 
+        input.form-control(name = 'password',type = 'password',placeholder = 'Enter Password')
+        br
+        input.btn.btn-primary(type='submit',value='Submit')  
+      
