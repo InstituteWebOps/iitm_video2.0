@@ -3,9 +3,10 @@ const path = require('path');
 const bodyParser = require('body-parser');    
 const mongoose = require('mongoose');
 const flash = require('connect-flash');
-const session = require('express-session');
 const config = require('./config/database');
 const passport = require('passport');
+const session = require('express-session');
+
 //Initialises app
 const app = express();
 
@@ -24,7 +25,7 @@ db.on('error',function(err){
 });
 
 //Bring models
-let users = require('./models/Users');
+let User = require('./models/user');
 
 //Load template(pug)
 app.set('view engine','pug');
@@ -38,6 +39,9 @@ app.use(bodyParser.urlencoded({extended : false}))
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(flash());
+app.use(session({ resave: true, 
+                  saveUninitialized: true, 
+                  secret: 'secret' }));
 
 //passport config
 require('./config/passport')(passport);
@@ -46,29 +50,12 @@ require('./config/passport')(passport);
 app.use(passport.initialize());
 app.use(passport.session());
 
-//Express-session Middleware
-app.use(session({
-    secret : 'It is a secret',
-    resave : false,
-    saveUninitialized : true
-}));
+//app.use(app.router);
 
-//Home route
-app.get('/',function(req,res){
-    res.render('loginPage')
-});
+//Setting routes
+let users = require('./routes/users');
+app.use('/',users);
 
-app.post('/login',function(req,res,next){
-    passport.authenticate('local',{
-        successRedirect : '/home',
-        failureRedirect : '/',
-        failureFlash : true
-    })(req,res,next);
-});
-
-app.get('/login',function(req,res){
-    res.render('homePage');
-})
 
 //Starts application in required port
 app.listen(3030);
